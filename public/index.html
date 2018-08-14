@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://www.gstatic.com/firebasejs/5.0.3/firebase.js"></script>
+<script>
+  var config = {
+    apiKey: "AIzaSyB9JVqdnpQuUdX6v-O1w8kMnEOlBWQt0J8",
+    authDomain: "time-wasting-button-clicker.firebaseapp.com",
+    databaseURL: "https://time-wasting-button-clicker.firebaseio.com",
+    projectId: "time-wasting-button-clicker",
+    storageBucket: "",
+    messagingSenderId: "499249122996"
+  };
+  firebase.initializeApp(config);
+</script>
+
+  <title>Clicker</title>
+	<script defer src="/__/firebase/5.0.4/firebase-app.js"></script>
+   	<script defer src="/__/firebase/5.0.4/firebase-database.js"></script>
+    	<script defer src="/__/firebase/init.js"></script>
+	<style>
+		h2 {
+			color: blue;
+		}
+		div {
+			height: 100%;
+			width: 50%;
+			position: fixed;
+			z-index: 1;
+			top: 0;
+			overflow-x: hidden;
+			padding-top: 20px;
+		}
+		
+		#left-blue {
+			left: 0;
+			background-color: blue;
+		}
+		#right-red {
+			right: 0;
+			background-color: red;
+		}
+
+		.button {
+ 			font-size: 24px;
+  			cursor: pointer;
+  			outline: none;
+  			color: blue;
+  			background-color: white;
+  			border: none;
+  			border-radius: 15px;
+  			box-shadow: 0 9px #999;
+		}
+
+		.button:hover {	
+			background-color: gray;
+		}
+		.button:active {
+			background-color: gray;
+  			box-shadow: 0 5px #666;
+  			transform: translateY(4px);
+		}
+		
+		.flex {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		body.flex {
+			flex-direction: row;
+		}
+		div.flex {
+			transition: width 0.3s;
+			flex-direction: column;
+		}
+	</style>
+	
+</head>
+
+<body class="flex">
+<script>
+		var red = 1;
+		var blue = 1;
+		
+		document.addEventListener('DOMContentLoaded', function() {
+			try {
+				let app = firebase.app();
+				let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+			} catch (e) {
+				console.error(e);
+			} 
+			
+			firebase.database().ref('/').on('value', function(snapshot) {
+				blue = snapshot.val().blue;
+				red = snapshot.val().red;
+				document.getElementById('blue-count').innerHTML = blue; 
+				document.getElementById('red-count').innerHTML = red; 
+				var all = red + blue; //100% = x. 1% = x / 
+				
+				var redpercent =  red / (all / 100);
+				var bluepercent = blue / (all / 100);
+				
+
+				document.getElementById("left-blue").style.width = bluepercent + "%";
+				document.getElementById("right-red").style.width = redpercent + "%";
+			});
+		}); 
+		function onClickRed() {
+			var ref = firebase.database().ref('/');
+			red++; 
+			var obj = {red: red};
+			ref.update(obj);
+		}
+		function onClickBlue() { 
+			var ref = firebase.database().ref('/');
+			//Adil
+			blue++;
+			var obj = {blue: blue};
+			ref.update(obj); 
+		}
+	</script>
+	<div id="left-blue" class="flex">
+		<h3><button class="button" onclick="onClickBlue()">Click this</button></h3>
+		<h2 id="blue-count" style="color: white"></h2>
+	</div>
+	<div id="right-red" class="flex">
+		<h3><button class="button" onclick="onClickRed()">Click this</button></h3>
+		<h2 id="red-count" style="color: white"></h2>
+	</div>
+</body>
+</html>
